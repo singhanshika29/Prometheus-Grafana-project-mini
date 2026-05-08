@@ -11,19 +11,24 @@ spec:
     matchLabels:
       app: flask-metrics-app
 
-  template:
-    metadata:
-      labels:
-        app: flask-metrics-app
+template:
+  metadata:
+    labels:
+      app: flask-metrics-app
 
-    spec:
-          containers:
-      - name: flask-metrics-app
-        image: flask-metrics-app:latest
-        imagePullPolicy: Never
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/metrics"
+      prometheus.io/port: "5000"
 
-        ports:
-        - containerPort: 5000
+  spec:
+    containers:
+        - name: flask-metrics-app
+          image: flask-metrics-app:latest
+          imagePullPolicy: Never
+
+          ports:
+            - containerPort: 5000
 
 ---
 
@@ -38,7 +43,7 @@ spec:
     app: flask-metrics-app
 
   ports:
-  - port: 5000
-    targetPort: 5000
+    - port: 5000
+      targetPort: 5000
 
   type: NodePort
